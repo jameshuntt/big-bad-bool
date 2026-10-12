@@ -1,0 +1,19 @@
+[package]
+name = "big-bad-bool-derive"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Procedural macros for big-bad-bool."
+
+repository = "https://github.com/jameshuntt/big-bad-bool"
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "2", features = ["full"] }
+
+[lints]
+workspace = true

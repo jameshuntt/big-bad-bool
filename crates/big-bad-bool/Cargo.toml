@@ -1,0 +1,15 @@
+[package]
+name = "big-bad-bool"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Facade for declarative packed-bit schemas and metadata."
+
+repository = "https://github.com/jameshuntt/big-bad-bool"
+[dependencies]
+big-bad-bool-core = { path = "../big-bad-bool-core", version = "0.1.0" }
+big-bad-bool-derive = { path = "../big-bad-bool-derive", version = "0.1.0" }
+
+[lints]
+workspace = true

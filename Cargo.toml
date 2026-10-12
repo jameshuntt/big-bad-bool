@@ -1,0 +1,19 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/big-bad-bool-core",
+    "crates/big-bad-bool-derive",
+    "crates/big-bad-bool",
+    "crates/big-bad-bool-interact",
+    "crates/big-bad-bool-test-suite",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["James Hunt"]
+
+repository = "https://github.com/jameshuntt/big-bad-bool"
+[workspace.lints.rust]
+unsafe_code = "forbid"

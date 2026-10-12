@@ -1,0 +1,11 @@
+[package]
+name = "big-bad-bool-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Runtime metadata and traits for packed-bit schemas."
+
+repository = "https://github.com/jameshuntt/big-bad-bool"
+[lints]
+workspace = true

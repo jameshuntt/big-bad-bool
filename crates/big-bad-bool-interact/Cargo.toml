@@ -1,0 +1,14 @@
+[package]
+name = "big-bad-bool-interact"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["James Hunt"]
+description = "Rules, dispatch, reconstruction, passthrough, and flow for Big Bad Bool packed words"
+keywords = ["bitpack", "bitfields", "dispatch", "encoding"]
+categories = ["encoding", "data-structures"]
+readme = "README.md"
+
+repository = "https://github.com/jameshuntt/big-bad-bool"
+[dependencies]
+big_bad_bool_core = { package = "big-bad-bool-core", version = "0.1.0", path = "../big-bad-bool-core" }

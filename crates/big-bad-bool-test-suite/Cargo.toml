@@ -1,0 +1,16 @@
+[package]
+name = "big-bad-bool-test-suite"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["James Hunt"]
+description = "Regression, exhaustive, compile-fail, and real-schema tests for Big Bad Bool"
+keywords = ["bitpack", "bitfields", "testing", "encoding"]
+categories = ["development-tools::testing", "encoding"]
+publish = true
+
+repository = "https://github.com/jameshuntt/big-bad-bool"
+[dependencies]
+big_bad_bool_core = { package = "big-bad-bool-core", version = "0.1.0", path = "../big-bad-bool-core" }
+big_bad_bool = { package = "big-bad-bool", version = "0.1.0", path = "../big-bad-bool" }
+big_bad_bool_interact = { package = "big-bad-bool-interact", version = "0.1.0", path = "../big-bad-bool-interact" }
