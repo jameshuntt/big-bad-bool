@@ -3,6 +3,16 @@
 //! The macro owns the bit math. This crate owns the stable runtime vocabulary:
 //! field metadata, schema lookup, raw-word conversion, and shared traits used by
 //! higher-level dispatch/negotiation crates.
+//!
+//! The crate is `no_std` (it needs `alloc`). Error messages and codes come from
+//! `liaise`: every `BitpackErrorKind` variant carries a `BITPACK` code, and
+//! `Display` prints `[BITPACK0001] message`.
+
+#![no_std]
+
+extern crate alloc;
+
+use liaise::LiaiseCodes;
 
 /// Error returned by strict checked constructors and validators.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -39,29 +49,22 @@ impl BitpackError {
 
 impl core::fmt::Display for BitpackError {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        match self.kind {
-            BitpackErrorKind::FieldOverflow { field, value, max } => {
-                write!(f, "field `{field}` value {value} exceeds max {max}")
-            }
-            BitpackErrorKind::RawOverflow { raw, max } => {
-                write!(f, "raw value {raw} exceeds storage max {max}")
-            }
-            BitpackErrorKind::RawLayoutViolation { raw, mask } => {
-                write!(
-                    f,
-                    "raw value {raw:#x} contains bits outside layout mask {mask:#x}"
-                )
-            }
-        }
+        write!(f, "{}", self.kind)
     }
 }
 
-impl std::error::Error for BitpackError {}
+impl core::error::Error for BitpackError {
+    fn source(&self) -> Option<&(dyn core::error::Error + 'static)> {
+        Some(&self.kind)
+    }
+}
 
 /// Specific failure category for strict bitpack operations.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, LiaiseCodes)]
+#[liaise(prefix = "BITPACK")]
 pub enum BitpackErrorKind {
     /// A named field value exceeds the field's maximum representable value.
+    #[liaise(code = 1, msg = "field `{field}` value {value} exceeds max {max}")]
     FieldOverflow {
         /// Field name as declared in the packed schema.
         field: &'static str,
@@ -71,6 +74,7 @@ pub enum BitpackErrorKind {
         max: u128,
     },
     /// A raw value cannot fit into the generated storage type.
+    #[liaise(code = 2, msg = "raw value {raw} exceeds storage max {max}")]
     RawOverflow {
         /// Rejected raw value.
         raw: u128,
@@ -78,6 +82,7 @@ pub enum BitpackErrorKind {
         max: u128,
     },
     /// A raw value fits in storage but sets bits outside the declared layout.
+    #[liaise(code = 3, msg = "raw value {raw:#x} contains bits outside layout mask {mask:#x}")]
     RawLayoutViolation {
         /// Rejected raw value.
         raw: u128,
@@ -450,5 +455,38 @@ pub const fn value_mask(width: u32) -> u128 {
         u128::MAX
     } else {
         (1u128 << width) - 1
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use alloc::string::ToString;
+    use core::error::Error as _;
+    use liaise::Liaise as _;
+
+    #[test]
+    fn error_display_carries_bitpack_code() {
+        assert_eq!(
+            BitpackError::field_overflow("mode", 9, 7).to_string(),
+            "[BITPACK0001] field `mode` value 9 exceeds max 7"
+        );
+        assert_eq!(
+            BitpackError::raw_overflow(300, 255).to_string(),
+            "[BITPACK0002] raw value 300 exceeds storage max 255"
+        );
+        assert_eq!(
+            BitpackError::raw_layout_violation(0x1f0, 0x0ff).to_string(),
+            "[BITPACK0003] raw value 0x1f0 contains bits outside layout mask 0xff"
+        );
+    }
+
+    #[test]
+    fn error_source_is_the_coded_kind() {
+        let err = BitpackError::raw_overflow(300, 255);
+        let source = err.source().expect("kind is the source");
+        assert_eq!(source.to_string(), err.kind.to_string());
+        assert_eq!(err.kind.code(), "BITPACK0002");
+        assert!(err.kind.source().is_none());
     }
 }
