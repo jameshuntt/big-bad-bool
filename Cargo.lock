@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "big-bad-bool"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "big-bad-bool-core",
  "big-bad-bool-derive",
@@ -19,7 +19,7 @@ dependencies = [
 
 [[package]]
 name = "big-bad-bool-derive"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "proc-macro2",
  "quote",
