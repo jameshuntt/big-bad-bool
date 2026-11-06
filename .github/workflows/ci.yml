@@ -2,6 +2,10 @@
 # these crates support (rust-version in Cargo.toml), and runs clippy. On main, once the
 # tests pass, publishes each crate whose Cargo.toml version is not on crates.io yet,
 # in dependency order. Publishing uses crates.io trusted publishing: no stored token.
+#
+# The two Rust versions check different feature sets. The facade's `program-bowl` feature pulls in
+# ob-serve-a-bowl, which needs Rust 1.88, so the oldest Rust checks the default features and `program`
+# (big_bad_bool::program without Bowl), and the newest checks every feature.
 name: CI
 
 on:
@@ -23,7 +27,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: [stable, "1.85"]
+        include:
+          - rust: stable
+            workspace: --all-features
+            facade: program-bowl
+            docs: --all-features
+          - rust: "1.85"
+            workspace: ""
+            facade: program
+            docs: --features big-bad-bool/program
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@master
@@ -35,17 +47,41 @@ jobs:
         if: matrix.rust != 'stable'
         run: CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback cargo +stable generate-lockfile
       - name: Test
-        run: cargo test --workspace --all-features
+        run: cargo test --workspace ${{ matrix.workspace }}
+      - name: Test the facade with ${{ matrix.facade }}
+        run: cargo test --manifest-path crates/big-bad-bool/Cargo.toml --features ${{ matrix.facade }}
+      - name: Docs, warnings denied
+        run: RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps ${{ matrix.docs }}
 
   clippy:
+    name: clippy on Rust ${{ matrix.rust }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rust: stable
+            facade: program-bowl
+            targets: --all-targets
+          # clippy 1.85 reports unnecessary_cast inside #[bitpack] expansions, so the facade's tests are
+          # linted on stable only
+          - rust: "1.85"
+            facade: program
+            targets: --lib
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: ${{ matrix.rust }}
           components: clippy
+      - name: Dependency versions the oldest supported Rust can build
+        if: matrix.rust != 'stable'
+        run: CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback cargo +stable generate-lockfile
       - name: Clippy
+        if: matrix.rust == 'stable'
         run: cargo clippy --workspace --all-targets --all-features
+      - name: Clippy on the facade with ${{ matrix.facade }}, warnings denied
+        run: cargo clippy --manifest-path crates/big-bad-bool/Cargo.toml --no-deps ${{ matrix.targets }} --features ${{ matrix.facade }} -- -D warnings
 
   publish:
     needs: [test, clippy]

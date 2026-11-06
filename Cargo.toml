@@ -16,5 +16,12 @@ license = "MIT OR Apache-2.0"
 authors = ["James Hunt"]
 
 repository = "https://github.com/jameshuntt/big-bad-bool"
+# Crates from crates.io that depend on this repo's crates (big-bad-bool-program, behind the facade's `program`
+# feature) use the copies here, so a `#[bitpack]` type and the program crate see one `PackedWord`. The published
+# packages are unaffected: there, both sides resolve to the same crates.io version.
+[patch.crates-io]
+big-bad-bool-core = { path = "crates/big-bad-bool-core" }
+big-bad-bool-interact = { path = "crates/big-bad-bool-interact" }
+
 [workspace.lints.rust]
 unsafe_code = "forbid"

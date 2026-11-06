@@ -9,6 +9,29 @@ Workspace crates:
 - `big-bad-bool-interact`
 - `big-bad-bool-test-suite`
 
+## Program layer (optional)
+
+`big-bad-bool` can also carry the program layer: dimensions over `#[bitpack]` types, contracts across them,
+bounded verification, optional framing, and stepping with one write path. It is the independently published
+[`big-bad-bool-program`](https://crates.io/crates/big-bad-bool-program) crate, re-exported whole as
+`big_bad_bool::program` behind a feature. `#[bitpack]` and the core metadata do not need it.
+
+```toml
+big-bad-bool = { version = "0.1", features = ["program"] }
+```
+
+```rust
+use big_bad_bool::program::{contract, dimension, sequence, Program, Stepper};
+```
+
+| feature        | turns on                                                        | Rust          |
+|----------------|-----------------------------------------------------------------|---------------|
+| (none)         | `#[bitpack]` and the core metadata                              | 1.85          |
+| `program`      | `big_bad_bool::program`                                         | 1.85          |
+| `program-bowl` | `program` plus the program crate's `bowl` feature (`BowlObserver`, ob-serve-a-bowl) | 1.88 |
+
+Neither is a default feature. The program crate's README has the guide and examples.
+
 ## Releasing
 
 Bump `version` in Cargo.toml, add a dated `## <version> (YYYY-MM-DD)` entry to CHANGELOG.md, and push to

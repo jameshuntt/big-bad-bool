@@ -11,6 +11,16 @@ repository = "https://github.com/jameshuntt/big-bad-bool"
 [dependencies]
 big-bad-bool-core = { path = "../big-bad-bool-core", version = "0.1.0" }
 big-bad-bool-derive = { path = "../big-bad-bool-derive", version = "0.1.0" }
+big-bad-bool-program = { version = "0.1.0", optional = true }
+
+[features]
+# big_bad_bool::program: the big-bad-bool-program crate. Builds on the workspace rust-version.
+program = ["dep:big-bad-bool-program"]
+# The program crate's ob-serve-a-bowl adapter. ob-serve-a-bowl needs Rust 1.88.
+program-bowl = ["program", "big-bad-bool-program/bowl"]
+
+[package.metadata.docs.rs]
+features = ["program"]
 
 [lints]
 workspace = true
