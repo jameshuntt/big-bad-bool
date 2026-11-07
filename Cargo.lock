@@ -13,21 +13,11 @@ dependencies = [
 
 [[package]]
 name = "big-bad-bool"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "big-bad-bool-core",
- "big-bad-bool-derive 0.1.1",
+ "big-bad-bool-derive 0.1.2",
  "big-bad-bool-program",
-]
-
-[[package]]
-name = "big-bad-bool"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86bc32f654962886f16e2778d7ec15e5a4ec7c091469058aeebc13abb76d128f"
-dependencies = [
- "big-bad-bool-core",
- "big-bad-bool-derive 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -40,6 +30,8 @@ dependencies = [
 [[package]]
 name = "big-bad-bool-derive"
 version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0f2a168f1766bf44f41eeacb4afd4bb907dd75570a36005d54aa3f69f11a45c8"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -48,9 +40,7 @@ dependencies = [
 
 [[package]]
 name = "big-bad-bool-derive"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f2a168f1766bf44f41eeacb4afd4bb907dd75570a36005d54aa3f69f11a45c8"
+version = "0.1.2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -82,7 +72,7 @@ dependencies = [
 name = "big-bad-bool-test-suite"
 version = "0.1.0"
 dependencies = [
- "big-bad-bool 0.1.1",
+ "big-bad-bool",
  "big-bad-bool-core",
  "big-bad-bool-interact",
 ]
@@ -270,11 +260,12 @@ dependencies = [
 
 [[package]]
 name = "ob-serve-a-bowl"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e34f52ee510a91229eebb81f7b6deb3ba343ad6217151ce06fe95002a78f4ff6"
+checksum = "2a944709332dc4a2769de3c71c6eb6a527054c519060576e1ee8d5b180211646"
 dependencies = [
- "big-bad-bool 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "big-bad-bool-core",
+ "big-bad-bool-derive 0.1.1",
  "big-bad-bool-interact",
  "loom",
 ]

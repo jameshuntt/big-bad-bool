@@ -30,7 +30,10 @@ use big_bad_bool::program::{contract, dimension, sequence, Program, Stepper};
 | `program`      | `big_bad_bool::program`                                         | 1.85          |
 | `program-bowl` | `program` plus the program crate's `bowl` feature (`BowlObserver`, ob-serve-a-bowl) | 1.88 |
 
-Neither is a default feature. The program crate's README has the guide and examples.
+Neither is a default feature. With neither, the facade is what it was in 0.1.1: `#[bitpack]` and the core
+metadata are unchanged. The base set and `program` build on Rust 1.85, the workspace rust-version; `program-bowl` needs 1.88.
+The program crate's API is documented at [docs.rs/big-bad-bool-program](https://docs.rs/big-bad-bool-program),
+and its source, guide and examples are at [jameshuntt/big-bad-bool-program](https://github.com/jameshuntt/big-bad-bool-program).
 
 ## Releasing
 
